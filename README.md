@@ -1,4 +1,5 @@
 This Fork is Updateed old code to Python v3 and Selenium 4+
+#example code test with Wordpress 6.7.2
 
 Step by Step for Installation on Windows Servers 2022
 
