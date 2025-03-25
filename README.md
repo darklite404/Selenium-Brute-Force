@@ -4,12 +4,16 @@ Step by Step for Installation on Windows Servers 2022
 
 - Install Chrome : https://www.google.com/chrome/
 - Install Python3 : https://www.python.org/downloads/windows/
+  
   ✅ Check the box: "Add Python to PATH"
 - Install Selenium : pip install selenium
+
 ![image](https://github.com/user-attachments/assets/fc090a1f-c411-404e-b47e-213296b3cd58)
 - Download and Replace chromedriver : 
 https://googlechromelabs.github.io/chrome-for-testing/#stable
+
 Example : [chromedriver](https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/win64/chromedriver-win64.zip)
+
 ![image](https://github.com/user-attachments/assets/d89971cc-618d-49e1-8ffd-b1c394b231bb)
 
 - Clone the GitHub Repo
